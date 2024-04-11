@@ -6,8 +6,9 @@ import ReactDOM from "react-dom";
 import "../styles/index.css";
 
 //import your own components
-import ToDoList from "./component/todolist";
+
+import ToDoListApi from "./component/todolistapi";
 
 
 //render your react application
-ReactDOM.render(<ToDoList />, document.querySelector("#app"));
+ReactDOM.render(<ToDoListApi />, document.querySelector("#app"));

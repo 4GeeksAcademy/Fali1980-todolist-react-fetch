@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-const ToDoList = () => {
+const ToDoListApi = () => {
     const [tasks, setTasks] = useState([]);
     const [taskInput, setTaskInput] = useState('');
 
-    useEffect(()=>{loadTask()},[] );
-    
+    useEffect(() => {
+        loadTask();
+    }, []);
+
     function loadTask() {
         fetch('https://playground.4geeks.com/todo/users/Fali1980')
-                .then(resp => { return resp.json(); })
-                .then(data => { setTasks(data.todos)})
-                .catch(error => { console.log(error); });
+            .then(resp => resp.json())
+            .then(data => setTasks(data.todos))
+            .catch(error => console.log(error));
     }
 
     const handleTaskInputChange = event => {
@@ -21,30 +23,23 @@ const ToDoList = () => {
         if (event.key === 'Enter' && taskInput.trim() !== '') {
             setTaskInput('');
             fetch('https://playground.4geeks.com/todo/todos/Fali1980', {
-                                method: 'POST',
-                                body: JSON.stringify({"label": taskInput}),
-                                headers: { "Content-Type": "application/json" }
-                            })
-                            .then(resp => { return resp.json(); })
-                            .then(loadTask())
-                            .catch(error => { console.log(error); });
-
-        }
-
-    };
-
-    const handleDeleteTask = index => {
-    
-        fetch(`https://playground.4geeks.com/todo/todos/${index}`, {
-                method: 'DELETE',
-                headers: { 'Accept': 'application/json' }
+                method: 'POST',
+                body: JSON.stringify({"label": taskInput}),
+                headers: { "Content-Type": "application/json" }
             })
-            .then(loadTask())
-            .catch(error => { console.error(error); });
-
+            .then(() => loadTask())
+            .catch(error => console.log(error));
+        }
     };
 
-        
+    const handleDeleteTask = taskId => {
+        fetch(`https://playground.4geeks.com/todo/todos/${taskId}`, {
+            method: 'DELETE',
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(() => loadTask())
+        .catch(error => console.error(error));
+    };
 
     return (
         <div className="container bg-info pb-5">
@@ -76,8 +71,8 @@ const ToDoList = () => {
             <div className="row">
                 <div className="col">
                     <ul className="list-group">
-                        {tasks.map((task, index) => (
-                            <li className="list-group-item taskLi d-flex justify-content-between align-items-center fw-bold" key={index}>
+                        {tasks.map(task => (
+                            <li className="list-group-item taskLi d-flex justify-content-between align-items-center fw-bold" key={task.id}>
                                 {task.label}
                                 <span onClick={() => handleDeleteTask(task.id)}>
                                     <i className="fa-regular fs-3 fa-circle-xmark iconX"></i>
@@ -106,4 +101,4 @@ const ToDoList = () => {
     );
 };
 
-export default ToDoList;
+export default ToDoListApi;
